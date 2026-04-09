@@ -24,6 +24,11 @@ cities = {
 sessionStorage = {}
 
 
+@app.route("/", methods=["GET"])
+def health():
+    return "OK", 200
+
+
 @app.route("/post", methods=["POST"])
 def main():
     logging.info(f"Request: {request.json!r}")
