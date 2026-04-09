@@ -31,15 +31,19 @@ def health():
 
 @app.route("/post", methods=["POST"])
 def main():
-    logging.info(f"Request: {request.json!r}")
-    response = {
-        "session": request.json["session"],
-        "version": request.json["version"],
-        "response": {"end_session": False},
-    }
-    handle_dialog(request.json, response)
-    logging.info(f"Response: {response!r}")
-    return jsonify(response)
+    try:
+        logging.info(f"Request: {request.json!r}")
+        response = {
+            "session": request.json["session"],
+            "version": request.json["version"],
+            "response": {"end_session": False},
+        }
+        handle_dialog(request.json, response)
+        logging.info(f"Response: {response!r}")
+        return jsonify(response)
+    except Exception as e:
+        logging.error(f"Error: {e}")
+        return jsonify({"response": {"text": "Ошибка сервера", "end_session": False}})
 
 
 def handle_dialog(req, res):
