@@ -24,26 +24,17 @@ cities = {
 sessionStorage = {}
 
 
-@app.route("/", methods=["GET"])
-def health():
-    return "OK", 200
-
-
 @app.route("/post", methods=["POST"])
 def main():
-    try:
-        logging.info(f"Request: {request.json!r}")
-        response = {
-            "session": request.json["session"],
-            "version": request.json["version"],
-            "response": {"end_session": False},
-        }
-        handle_dialog(request.json, response)
-        logging.info(f"Response: {response!r}")
-        return jsonify(response)
-    except Exception as e:
-        logging.error(f"Error: {e}")
-        return jsonify({"response": {"text": "Ошибка сервера", "end_session": False}})
+    logging.info(f"Request: {request.json!r}")
+    response = {
+        "session": request.json["session"],
+        "version": request.json["version"],
+        "response": {"end_session": False},
+    }
+    handle_dialog(request.json, response)
+    logging.info(f"Response: {response!r}")
+    return jsonify(response)
 
 
 def handle_dialog(req, res):
@@ -60,10 +51,7 @@ def handle_dialog(req, res):
             res["response"]["text"] = "Не расслышала имя. Повтори, пожалуйста!"
         else:
             sessionStorage[user_id]["first_name"] = first_name
-            res["response"]["text"] = (
-                f"Приятно познакомиться, {first_name.title()}. "
-                f"Я - Алиса. Какой город хочешь увидеть?"
-            )
+            res["response"]["text"] = f"Приятно познакомиться, {first_name.title()}. Я - Алиса. Какой город хочешь увидеть?"
             res["response"]["buttons"] = [
                 {"title": city.title(), "hide": True} for city in cities
             ]
@@ -77,9 +65,7 @@ def handle_dialog(req, res):
             }
             res["response"]["text"] = "Я угадал!"
         else:
-            res["response"]["text"] = (
-                "Первый раз слышу об этом городе. Попробуй еще разок!"
-            )
+            res["response"]["text"] = "Первый раз слышу об этом городе. Попробуй еще разок!"
 
 
 def get_city(req):
@@ -99,4 +85,4 @@ def get_first_name(req):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+    app.run(host="0.0.0.0", port=5000)
